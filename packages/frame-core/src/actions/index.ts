@@ -1,3 +1,5 @@
 export * as AddFrame from './AddFrame'
 export * as ViewProfile from './ViewProfile'
+export * as ViewToken from './ViewToken'
 export * as SignIn from './SignIn'
+export * as Swap from './Swap'

@@ -5,7 +5,9 @@ import type {
   ReadyOptions,
   SetPrimaryButtonOptions,
   SignIn,
+  Swap,
   ViewProfile,
+  ViewToken,
 } from '@farcaster/frame-core'
 import type { EventEmitter } from 'eventemitter3'
 import type { Provider } from 'ox'
@@ -56,6 +58,8 @@ export type FrameSDK = {
     addFrame: AddFrame.AddFrame
     signIn: SignIn.SignIn
     viewProfile: ViewProfile.ViewProfile
+    viewToken: ViewToken.ViewToken
+    swap: Swap.Swap
   }
   wallet: {
     ethProvider: Provider.Provider

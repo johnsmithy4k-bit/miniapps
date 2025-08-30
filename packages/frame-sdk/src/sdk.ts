@@ -37,6 +37,8 @@ export const sdk: FrameSDK = {
     ready: frameHost.ready.bind(frameHost),
     close: frameHost.close.bind(frameHost),
     viewProfile: frameHost.viewProfile.bind(frameHost),
+    viewToken: frameHost.viewToken.bind(frameHost),
+    swap: frameHost.swap.bind(frameHost),
     signIn: async (options) => {
       const response = await frameHost.signIn(options)
       if (response.result) {

@@ -1,5 +1,5 @@
 import type { Address, Provider, RpcRequest, RpcResponse, RpcSchema } from 'ox'
-import type { AddFrame, SignIn, ViewProfile } from './actions'
+import type { AddFrame, SignIn, Swap, ViewProfile, ViewToken } from './actions'
 import type { FrameContext } from './context'
 import type {
   EventFrameAdded,
@@ -64,6 +64,8 @@ export type WireFrameHost = {
   eip6963RequestProvider: () => void
   addFrame: AddFrame.WireAddFrame
   viewProfile: ViewProfile.ViewProfile
+  viewToken: ViewToken.ViewToken
+  swap: Swap.Swap
 }
 
 export type FrameHost = {
@@ -82,6 +84,8 @@ export type FrameHost = {
   eip6963RequestProvider: () => void
   addFrame: AddFrame.AddFrame
   viewProfile: ViewProfile.ViewProfile
+  viewToken: ViewToken.ViewToken
+  swap: Swap.Swap
 }
 
 export type FrameEthProviderEventData = {
