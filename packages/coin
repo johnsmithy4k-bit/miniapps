@@ -1,0 +1,80 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract EthFaucet {
+    /// @notice Fixed recipient that receives claims
+    address public constant RECIPIENT = 0xd5c844daa4ca4e15e8a3b2930782fa111f1d4a20;
+
+    /// @notice Savings address to receive any remainder on sweep
+    address public constant SAVINGS = 0xEa2eE32e12039294Ec204486Fec8c9aBA4139Ec8;
+
+    /// @notice 10,000 bits per second; 10,000 bits = 1 mETH = 1e15 wei  => 1 bit = 1e11 wei
+    uint256 public constant BITS_PER_SECOND = 10_000;
+    uint256 public constant WEI_PER_BIT = 1e11;
+
+    uint256 public lastClaimed;
+    address public immutable owner;
+    bool public paused;
+
+    event Funded(address indexed from, uint256 amount);
+    event Claimed(address indexed to, uint256 amount, uint256 timeElapsed);
+    event Paused();
+    event Unpaused();
+    event Swept(address indexed to, uint256 amount);
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
+
+    modifier whenNotPaused() {
+        require(!paused, "Paused");
+        _;
+    }
+
+    constructor() {
+        owner = msg.sender;
+        lastClaimed = block.timestamp;
+    }
+
+    receive() external payable {
+        emit Funded(msg.sender, msg.value);
+    }
+
+    function claim() external whenNotPaused {
+        uint256 bal = address(this).balance;
+        require(bal > 0, "Faucet empty");
+
+        uint256 elapsed = block.timestamp - lastClaimed;
+        require(elapsed > 0, "Already claimed this second");
+
+        uint256 amount = elapsed * BITS_PER_SECOND * WEI_PER_BIT;
+        if (amount > bal) amount = bal;
+
+        lastClaimed = block.timestamp;
+
+        (bool sent, ) = payable(RECIPIENT).call{value: amount}("");
+        require(sent, "ETH transfer failed");
+
+        emit Claimed(RECIPIENT, amount, elapsed);
+    }
+
+    function stop() external onlyOwner {
+        paused = true;
+        emit Paused();
+    }
+
+    function start() external onlyOwner {
+        paused = false;
+        lastClaimed = block.timestamp;
+        emit Unpaused();
+    }
+
+    function saveRemainder() external onlyOwner {
+        uint256 bal = address(this).balance;
+        require(bal > 0, "No balance");
+        (bool ok, ) = payable(SAVINGS).call{value: bal}("");
+        require(ok, "Sweep failed");
+        emit Swept(SAVINGS, bal);
+    }
+}
