@@ -1,0 +1,16 @@
+eth-faucet/
+├─ contracts/
+│  └─ EthFaucet.sol
+├─ scripts/
+│  └─ deploy.ts
+├─ docs/                 <-- static site served by GitHub Pages
+│  ├─ index.html
+│  └─ config.json        <-- put your deployed contract address here
+├─ .gitignore
+├─ package.json
+├─ hardhat.config.ts
+├─ tsconfig.json
+├─ README.md
+└─ .github/
+   └─ workflows/
+      └─ pages.yml       <-- optional: auto-enable GitHub Pages
